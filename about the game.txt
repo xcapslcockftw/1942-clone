@@ -1,0 +1,8 @@
+Press SPACE to shoot.
+
+The background for this game is the satellite view of our neighborhood.
+
+The game is very clunky and incomplete. My algorithm also for the mechanics about
+the game aren't still that great. But I've made this on my own and it was a fun
+and learned a lot from that experience.
+

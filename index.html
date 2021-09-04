@@ -1,0 +1,243 @@
+<html>
+<head>
+	<title>1942 Game</title>
+
+<style type="text/css">
+	body{
+		background-color:black;
+	}
+	#container{
+		background: url('warzone.jpg');
+		width: 1000px;
+		height: 680px;
+		left: 198.5px;
+        position: absolute;
+	}
+	#hero{
+		background: url('1942.gif');
+		background-position: -85px -180px;
+		width:28px;
+		height:28px;
+		position:absolute;
+	}
+	.enemy1{
+		background: url('1942.gif');
+		background-position: 0px -10px;
+		width:28px;
+		height:28px;
+		position:absolute;
+	}
+	.enemy2{
+		background: url('1942.gif');
+		background-position: -30px -10px;
+		width:28px;
+		height:28px;
+		position:absolute;
+	}
+	.enemy3{
+		background-image: url('1942.gif');
+		background-position: -60 -10px;
+		width: 28px;
+		height: 28px;
+		position: absolute;
+	}
+	.enemy4{
+		background-image: url('1942.gif');
+		background-position: -90px -10px;
+		width:28px;
+		height:20px;
+		position:absolute;
+	}
+	.enemy5{	
+		background-image: url('1942.gif');
+		background-position: -120px -10px;
+		width:28px;
+		height:20px;
+		position:absolute;
+	}
+	.enemy6{
+		background-image: url('1942.gif');
+		background-position: -150px -10px;
+		width:28px;
+		height: 20px;
+		position:absolute;
+	}
+	.enemy7{
+		background: url('1942.gif');
+		background-position: -180px -10px;
+		width:28px;
+		height:28px;
+		position:absolute;
+	}
+	.bullets{
+		background: url('1942.gif');
+		background-position: -185px -400px;
+		width:18px;
+		height:18px;
+		position:absolute;
+	}
+	.explosion{
+        background-image: url('1942.gif');
+        background-position: -111px -30px;
+		width:28px;
+		height:28px;
+		position:absolute;
+        top: 10px;
+        right: 10px;
+    }
+	#score{
+		position:absolute;
+		width: 100px;
+		height: auto;
+		text-align: center;
+		border:10px solid red;
+		top:20px;
+		left:10px;
+		background-color:white;
+		padding:10px;
+		font-size:30px;
+		font-family: Arial;	
+	}
+</style>
+</head>
+<body>
+	<div id='container'>
+		<div id='hero'></div>
+		<div id='enemies'>	
+		</div>
+		<div id='bullets'>
+			<!-- <div class='bullet' style='top:150px; left:200px;'></div>
+			<div class='bullet' style='top:250px; left:200px;'></div>
+			<div class='bullet' style='top:350px; left:200px;'></div>
+			<div class='bullet' style='top:450px; left:200px;'></div> -->
+		</div>	
+	</div>
+	<div id='score'>0</div>
+	
+<script>
+	// Display hero !Done!
+	// Make the hero move up/down/left/right ! Done !
+	// Display enmies with Script !Done! planning to make algorith to display other enemy types
+	// Display 7 enemies !Done!
+	// Make the enemies move !Done!
+	// Enemy screen limit reset !Done!
+	// Make enemies spawn with their x axis random after reset !Done!
+	// When spacebar is presses, shoot bullet !Done!
+	// Hero plane colliding with map limit !Done!
+	// Additional feature to be decided yet ...
+	// Explosion 25% working, exploding but looks nonsensical
+	// Implement start game mechanism
+	// Score system 25% working, not adding score properly
+	// New enemy model at a certain score
+
+	var hero = {
+		x: 500,
+		y: 650
+	}
+
+	function displayHero(){
+		document.getElementById('hero').style['top'] = hero.y + "px";
+		document.getElementById('hero').style['left'] = hero.x + "px";
+	}
+	
+	var enemies = [{x:50, y:100},{x:200, y:50}, {x:350, y:100}, {x:500, y:50}, {x:650, y:100}, {x:800, y:50}, {x:950, y:100}];
+	var enemiesRandom = [{x:50, y:100},{x:200, y:50}, {x:350, y:100}, {x:500, y:50}, {x:650, y:100}, {x:800, y:50}, {x:950, y:100}]; // This doesn't ever update, so use this as the random for enemies X
+	var displayExplosion = false;
+	function displayEnemies(){
+		var enemy = "";
+		for(var i = 0; i<enemies.length; i++){
+			if (displayExplosion == false) {
+			enemy = enemy + "<div class='enemy"+(i+1)+"' style='top:"+enemies[i].y+"px; left:"+enemies[i].x+"px;'></div>"
+			}
+			if (displayExplosion == true) {
+			enemy = + enemy + "<div class='explosion' style='top:"+bullets[i].y+"px; left:"+bullets[i].x+"px;'></div>"
+			}
+			displayExplosion = false;
+		}
+		document.getElementById('enemies').innerHTML = enemy;
+	}
+	function moveEnemies(){
+		var min = 0;
+		var max = 0;
+		for(var z = 0; z<enemies.length; z++){
+			enemies[z].y = enemies[z].y + 5;
+			if(enemies[z].y > 670){
+				enemies[z].y = 0;
+				enemies[z].x = Math.floor(Math.random() * enemiesRandom[6-z].x) + 1; // Because enemies[x] consistently updates, we use enemiesRandom because it's constant 
+			}
+		}
+	}
+	
+	var bullets = [];
+	function displayBullets(){
+		bullets_output = '';
+		for(var b = 0; b<bullets.length; b++){
+			bullets_output = bullets_output + "<div class='bullets' style='top:"+bullets[b].y+"px; left:"+bullets[b].x+"px;'></div>"
+		}
+		document.getElementById('bullets').innerHTML = bullets_output		
+	}
+
+	function moveBullets(){
+		for(var mb = 0; mb<bullets.length; mb++){
+			bullets[mb].y = bullets[mb].y - 5;
+			 if(bullets[mb].y < 0){
+			 	bullets[mb] = bullets[bullets.length-1]
+			 	bullets.pop();
+			 }
+		}
+	}
+	function detectCollision(){
+		//var enemyExplode = "";
+		for(var i=0; i<bullets.length; i++){
+			for(var j=0; j<enemies.length; j++){
+				if (Math.abs(bullets[i].y - enemies[j].y) < 15 && Math.abs(bullets[i].x - enemies[j].x) < 15) {
+					console.log('bullet ' + i + " collided with enemy " + j);
+					score+= 10;
+					displayExplosion = true;
+				}
+			}
+		}
+	}
+
+	var score = 0;
+	function displayScore(){
+		document.getElementById('score').innerHTML = score;
+	}
+	document.onkeydown = function(keypress){
+		//console.log(keypress);
+		// Up 38, Down 40, Right 39, Left 37 map with 1000 heigh 680
+		if(keypress.keyCode == 38 && hero.y >10){
+			hero.y = hero.y - 15;
+		}
+		else if(keypress.keyCode == 40 && hero.y < 650){
+			hero.y = hero.y + 15;
+		}
+		else if(keypress.keyCode == 39 && hero.x < 965){
+			hero.x = hero.x + 15;
+		}
+		else if(keypress.keyCode == 37 && hero.x > 10){
+			hero.x = hero.x - 15;
+		}	
+		else if(keypress.keyCode == 32){
+			bullets.push({x:hero.x+15, y:hero.y-15});
+			
+			displayBullets();	
+		}
+		displayHero();
+	}
+
+	function gameLoop(){
+		displayHero();
+		displayEnemies();
+		moveEnemies();
+		moveBullets();
+		displayBullets();
+		detectCollision();
+		displayScore();
+	}
+	setInterval(gameLoop, 25);
+
+</script>
+
+</body>
+</html>
